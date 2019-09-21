@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb+srv://SilentBean:BeanSilent007@beanserver-jciou.mongodb.net/test?retryWrites=true&w=majority",
+  "jwtSecret": "secret"
+}
