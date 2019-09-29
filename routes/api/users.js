@@ -13,14 +13,15 @@ const User = require("../../models/User");
 router.post(
   "/",
   [
-    check("name", "Name is required")
+    check("name", "Non dimenticare il tuo nome")
       .not()
       .isEmpty(),
-    check("email", "Please include a valid email").isEmail(),
+    check("email", "Per favore includere un email valido").isEmail(),
     check(
       "password",
       "Please enter a password with 6 or more characters"
-    ).isLength({ min: 6 })
+    ).isLength({ min: 6 }),
+    check("bookId", "Scrive il ID del tuo libro.").not()
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -28,19 +29,27 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req.body;
+    const { name, surname, email, password, bookId } = req.body;
 
     try {
       let user = await User.findOne({ email });
+      let book = await User.findOne({ bookId });
 
       if (user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: "User already exists" }] });
+          .json({ errors: [{ msg: "Questo email è già stato registrato" }] });
+      }
+
+      if (book) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Questo libro è già stato registrato" }] });
       }
 
       user = new User({
         name,
+        surname,
         email,
         bookId,
         password
